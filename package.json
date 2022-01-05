@@ -1,0 +1,24 @@
+{
+   "name": "owc-web-api",
+   "version": "0.0.1",
+   "description": "API for Overwatch Companion",
+   "devDependencies": {
+      "@types/node": "^8.0.29",
+      "cross-env": "^7.0.3",
+      "nodemon": "^2.0.15",
+      "ts-node": "3.3.0"
+   },
+   "dependencies": {
+      "body-parser": "^1.18.1",
+      "express": "^4.15.4",
+      "mysql": "^2.14.1",
+      "reflect-metadata": "^0.1.10",
+      "typeorm": "0.2.41",
+      "typescript": "^4.5.4"
+   },
+   "scripts": {
+      "start": "node build/index.js",
+      "dev": "cross-env DEV=DEV nodemon src/index.ts",
+      "build": "tsc"
+   }
+}
