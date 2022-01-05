@@ -5,11 +5,11 @@ import * as bodyParser from "body-parser";
 import { Request, Response } from "express";
 import { Routes } from "./routes";
 import { User } from "./entity/User";
-import ormConfig from "./ormConfig";
+
 
 const PORT = process.env.PORT || 3001;
 
-createConnection(ormConfig).then(async connection => {
+createConnection().then(async connection => {
 
     // create express app
     const app = express();

@@ -18,7 +18,7 @@
    },
    "scripts": {
       "start": "node build/index.js",
-      "dev": "cross-env DEV=DEV nodemon src/index.ts",
+      "dev": "cross-env DEV=dev nodemon src/index.ts",
       "build": "tsc"
    }
 }
