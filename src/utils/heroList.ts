@@ -1,4 +1,4 @@
-import Hero from "../models/Hero";
+import Hero from "../types/Hero";
 
 const heroList: Hero[] = [
     {
