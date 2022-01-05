@@ -131,4 +131,5 @@ const heroList: Hero[] = [
     }
 ];
 
+
 export default heroList;

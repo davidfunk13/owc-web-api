@@ -7,28 +7,8 @@ const connection = process.env.NODE_ENV === "production" ? { url: process.env.JA
    username: "root",
    password: "",
    database: "owc_db",
-   logging: true,
+   logging: false,
 };
-
-console.log(process.env.DEV,{
-   type: "mysql",
-   ...connection,
-   synchronize: true,
-   entities: [
-   entityPath
-],
-   migrations: [
-   migrationsPath
-],
-   subscribers: [
-   subscribersPath
-],
-   cli: {
-   entitiesDir: "src/entity",
-   migrationsDir: "src/migration",
-   subscribersDir: "src/subscriber"
-}
-})
 
 module.exports = {
    type: "mysql",

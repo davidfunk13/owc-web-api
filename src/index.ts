@@ -5,6 +5,7 @@ import * as bodyParser from "body-parser";
 import { Request, Response } from "express";
 import { Routes } from "./routes";
 import { User } from "./entity/User";
+import heroList from "./utils/heroList";
 
 
 const PORT = process.env.PORT || 3001;
@@ -31,6 +32,7 @@ createConnection().then(async connection => {
     // setup express app here
     // ...
 
+    
     // start express server
     app.listen(PORT, ()=>{
         console.log("Server listening to incoming requests...")
