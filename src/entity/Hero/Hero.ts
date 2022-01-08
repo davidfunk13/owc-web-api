@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
-import Role from "../types/Role";
+import Role from "../../types/Role";
 
 @Entity()
 export class Hero extends BaseEntity {

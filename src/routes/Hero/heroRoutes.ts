@@ -1,15 +1,12 @@
 import { HeroController } from "../../controller/Hero/HeroController"
+import express from 'express'
 
-const heroRoutes = [{
-    method: "get",
-    route: "/heroes",
-    controller: HeroController,
-    action: "all"
-},{
-    method: "get",
-    route: "/heroes/:name",
-    controller: HeroController,
-    action: "one"
-}];
+const heroApi = express.Router();
 
-export default heroRoutes
+const heroController = new HeroController()
+
+heroApi.get('/', heroController.all);
+heroApi.get('/:role', heroController.role);
+heroApi.get('/one/:name', heroController.oneByName);
+
+export default heroApi

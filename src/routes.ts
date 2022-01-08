@@ -1,11 +1,9 @@
-import { HeroController } from "./controller/Hero/HeroController";
-import { UserController } from "./controller/User/UserController";
-import heroRoutes from "./routes/Hero/heroRoutes";
-import userRoutes from "./routes/User/userRoutes";
+import heroApi from "./routes/Hero/heroRoutes";
+import battletagApi from "./routes/Battletag/battletagRoutes";
 
 const routes = [
-    ...heroRoutes,
-    ...userRoutes
+    { path: '/api/battletag', handler: battletagApi },
+    { path: '/api/hero', handler: heroApi }
 ];
 
 export default routes
