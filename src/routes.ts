@@ -1,34 +1,11 @@
-import { HeroController } from "./controller/HeroController";
-import {UserController} from "./controller/UserController";
+import { HeroController } from "./controller/Hero/HeroController";
+import { UserController } from "./controller/User/UserController";
+import heroRoutes from "./routes/Hero/heroRoutes";
+import userRoutes from "./routes/User/userRoutes";
 
-export const Routes = [{
-    method: "get",
-    route: "/users",
-    controller: UserController,
-    action: "all"
-}, {
-    method: "get",
-    route: "/users/:id",
-    controller: UserController,
-    action: "one"
-}, {
-    method: "post",
-    route: "/users",
-    controller: UserController,
-    action: "save"
-}, {
-    method: "delete",
-    route: "/users/:id",
-    controller: UserController,
-    action: "remove"
-}, {
-    method: "get",
-    route: "/heroes",
-    controller: HeroController,
-    action: "all"
-},{
-    method: "get",
-    route: "/heroes/:name",
-    controller: HeroController,
-    action: "one"
-}];
+const routes = [
+    ...heroRoutes,
+    ...userRoutes
+];
+
+export default routes

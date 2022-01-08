@@ -1,7 +1,7 @@
 
 import {getRepository} from "typeorm";
 import {NextFunction, Request, Response} from "express";
-import { Hero } from "../entity/Hero";
+import { Hero } from "../../entity/Hero";
 
 export class HeroController {
 
