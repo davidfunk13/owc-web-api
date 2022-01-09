@@ -39,24 +39,66 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
+exports.HeroController = void 0;
 var typeorm_1 = require("typeorm");
-var express_1 = __importDefault(require("express"));
-var routes_1 = __importDefault(require("./routes"));
-var PORT = process.env.PORT || 3001;
-(0, typeorm_1.createConnection)().then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
-    var app;
-    return __generator(this, function (_a) {
-        app = (0, express_1.default)();
-        app.use(express_1.default.json());
-        app.use(express_1.default.urlencoded({ extended: true }));
-        routes_1.default.map(function (route) { return app.use(route.path, route.handler); });
-        // start express server
-        app.listen(PORT, function () {
-            console.log("Server listening to incoming requests...");
+var Hero_1 = require("../../entity/Hero/Hero");
+var roleStringToNumberMap_1 = __importDefault(require("../../utils/maps/role/roleStringToNumberMap"));
+var HeroController = /** @class */ (function () {
+    function HeroController() {
+    }
+    HeroController.prototype.all = function (request, response, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var heroRepository, allHeroes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        heroRepository = (0, typeorm_1.getRepository)(Hero_1.Hero);
+                        return [4 /*yield*/, heroRepository.find()];
+                    case 1:
+                        allHeroes = _a.sent();
+                        response.json(allHeroes);
+                        return [2 /*return*/];
+                }
+            });
         });
-        return [2 /*return*/];
-    });
-}); })
-    .catch(function (error) { return console.log(error); });
-//# sourceMappingURL=index.js.map
+    };
+    HeroController.prototype.oneByName = function (request, response, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var heroRepository, oneHero;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        heroRepository = (0, typeorm_1.getRepository)(Hero_1.Hero);
+                        return [4 /*yield*/, heroRepository.findOne({
+                                name: request.params.name
+                            })];
+                    case 1:
+                        oneHero = _a.sent();
+                        response.json(oneHero);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    HeroController.prototype.role = function (request, response, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var heroRepository, byRole;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        heroRepository = (0, typeorm_1.getRepository)(Hero_1.Hero);
+                        return [4 /*yield*/, heroRepository.find({
+                                role: roleStringToNumberMap_1.default[request.params.role]
+                            })];
+                    case 1:
+                        byRole = _a.sent();
+                        response.json(byRole);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return HeroController;
+}());
+exports.HeroController = HeroController;
+//# sourceMappingURL=HeroController.js.map

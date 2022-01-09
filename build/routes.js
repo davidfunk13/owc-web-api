@@ -1,37 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Routes = void 0;
-var HeroController_1 = require("./controller/HeroController");
-var UserController_1 = require("./controller/UserController");
-exports.Routes = [{
-        method: "get",
-        route: "/users",
-        controller: UserController_1.UserController,
-        action: "all"
-    }, {
-        method: "get",
-        route: "/users/:id",
-        controller: UserController_1.UserController,
-        action: "one"
-    }, {
-        method: "post",
-        route: "/users",
-        controller: UserController_1.UserController,
-        action: "save"
-    }, {
-        method: "delete",
-        route: "/users/:id",
-        controller: UserController_1.UserController,
-        action: "remove"
-    }, {
-        method: "get",
-        route: "/heroes",
-        controller: HeroController_1.HeroController,
-        action: "all"
-    }, {
-        method: "get",
-        route: "/heroes/:name",
-        controller: HeroController_1.HeroController,
-        action: "one"
-    }];
+var heroRoutes_1 = __importDefault(require("./routes/Hero/heroRoutes"));
+var battletagRoutes_1 = __importDefault(require("./routes/Battletag/battletagRoutes"));
+var routes = [
+    { path: '/api/battletag', handler: battletagRoutes_1.default },
+    { path: '/api/hero', handler: heroRoutes_1.default }
+];
+exports.default = routes;
 //# sourceMappingURL=routes.js.map

@@ -3,7 +3,7 @@ import { Platform } from "../../types/Platform";
 
 @Entity()
 export class Battletag {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("increment")
     id: number;
 
     @Column()

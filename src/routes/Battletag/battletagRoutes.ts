@@ -8,6 +8,6 @@ const battletagController = new BattletagController()
 
 battletagApi.post('/', checkJwt, battletagController.save);
 battletagApi.get('/:id', checkJwt, battletagController.oneById);
-battletagApi.delete('/remove/:id', checkJwt, battletagController.remove);
+battletagApi.delete('/:id', checkJwt, battletagController.remove);
 
 export default battletagApi

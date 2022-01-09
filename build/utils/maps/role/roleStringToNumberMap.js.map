@@ -1,0 +1,1 @@
+{"version":3,"file":"roleStringToNumberMap.js","sourceRoot":"","sources":["../../../../src/utils/maps/role/roleStringToNumberMap.ts"],"names":[],"mappings":";;;;;AAAA,6DAAuC;AAEvC,IAAM,qBAAqB,GAAG;IAC1B,IAAI,EAAE,cAAI,CAAC,IAAI;IACf,MAAM,EAAE,cAAI,CAAC,MAAM;IACnB,OAAO,EAAE,cAAI,CAAC,OAAO;CACxB,CAAC;AAEF,kBAAe,qBAAqB,CAAA"}

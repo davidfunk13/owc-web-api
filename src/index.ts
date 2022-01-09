@@ -7,7 +7,8 @@ const PORT = process.env.PORT || 3001;
 
 createConnection().then(async (connection) => {
     const app = express();
-
+    app.use(express.json())
+    app.use(express.urlencoded({ extended: true }))
     routes.map(route => app.use(route.path, route.handler));
     
     // start express server
