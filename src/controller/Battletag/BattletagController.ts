@@ -5,11 +5,11 @@ import { Battletag } from "../../entity/Battletag/Battletag";
 export class BattletagController {
     async oneById(request: Request, response: Response, next: NextFunction) {
         const battletagRepository = getRepository(Battletag);
-        
+
         const oneBattletag = await battletagRepository.findOne(request.params.id);
-        
-        if (!oneBattletag){
-            response.json({message: "Battletag not found."})
+
+        if (!oneBattletag) {
+            response.json({ message: "Battletag not found." })
         }
 
         response.json(oneBattletag);
@@ -27,13 +27,16 @@ export class BattletagController {
         const battletagRepository = getRepository(Battletag);
 
         let battletagToRemove = await battletagRepository.findOne(request.params.id);
-        
+
         if (!battletagToRemove) {
-            response.json({message: "Battletag not found."});
+            response.json({
+                message:
+                    "Battletag not found."
+            });
         }
-        
+
         const removed = await battletagRepository.remove(battletagToRemove);
-        
+
         response.json(removed)
     }
 
