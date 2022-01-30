@@ -1,21 +1,18 @@
-import jwt from 'express-jwt'
-import jwksRsa from 'jwks-rsa'
-import { config } from 'dotenv'
+import { config } from 'dotenv';
+import jwt from 'express-jwt';
+import JwksRsa from 'jwks-rsa';
 
 config();
 
-const secret = jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: `https://${process.env.DOMAIN}/.well-known/jwks.json`
-});
-
-const checkJwt = jwt({
-    secret: secret,
-    audience: process.env.AUTH0_AUDIENCE,
+export const checkJwt = jwt({
+    secret: JwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://${process.env.DOMAIN}/.well-known/jwks.json`
+    }),
+    audience: process.env.AUDIENCE,
     issuer: `https://${process.env.DOMAIN}/`,
     algorithms: ['RS256']
 });
 
-export default checkJwt
