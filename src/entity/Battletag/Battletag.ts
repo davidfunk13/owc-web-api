@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
 import { Platform } from "../../types/Platform";
+import { Session } from "../Session/Session";
 
 @Entity()
 export class Battletag {
@@ -26,4 +27,8 @@ export class Battletag {
 
     @Column()
     portrait: string;
+    
+
+    @OneToMany(type => Session, session => session.battletag) sessions: Session[];  
+
 }
