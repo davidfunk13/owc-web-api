@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne } from "typeorm";
 import Role from "../../types/Role";
 import { Battletag } from "../Battletag/Battletag";
+import {Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, IsNotEmpty} from "class-validator";
 
 @Entity()
 export class Session extends BaseEntity {
@@ -9,22 +10,40 @@ export class Session extends BaseEntity {
     id: number;
     
     @Column()
-    tankSrStart: number;
+    @IsNotEmpty()
+    @Min(500)
+    @Max(5000)
+    tankSrStart: number
     
     @Column()
-    tankSrCurrent: number;
+    @IsNotEmpty()
+    @Min(500)
+    @Max(5000)
+    tankSrCurrent: number    
+
+    @Column()
+    @IsNotEmpty()
+    @Min(500)
+    @Max(5000)
+    damageSrStart: number
     
     @Column()
-    damageSrStart: number;
+    @IsNotEmpty()
+    @Min(500)
+    @Max(5000)
+    damageSrCurrent: number    
     
     @Column()
-    damageSrCurrent: number;
+    @IsNotEmpty()
+    @Min(500)
+    @Max(5000)
+    supportSrStart: number
     
     @Column()
-    supportSrStart: number;
-    
-    @Column()
-    supportSrCurrent: number;
+    @IsNotEmpty()
+    @Min(500)
+    @Max(5000)
+    supportSrCurrent: number    
     
     @ManyToOne(type => Battletag, battletag => battletag.sessions) battletag: Battletag; 
 }
