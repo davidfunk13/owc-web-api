@@ -3,41 +3,51 @@ import { NextFunction, Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 
 export class BattletagController {
-    async oneById(request: Request, response: Response, next: NextFunction) {
+    async oneById(req: Request, res: Response, next: NextFunction) {
         const battletagRepository = getRepository(Battletag);
+        
+        
+        //with[]="" params in express
+        // use them for relations!
+        //  let filters = req.query.with
 
-        const oneBattletag = await battletagRepository.findOne(request.params.id, { relations: ["sessions"] });
+        const battletag = await battletagRepository.findOne(req.params.id, {
+            relations: ["sessions"]
+        });
 
-        if (!oneBattletag) {
-           return response.json({ message: "Battletag not found." })
+        if (!battletag) {
+            return res.json({ message: "Battletag not found." })
         }
 
-        response.json(oneBattletag);
+        res.json(battletag);
     }
 
-    async save(request: Request, response: Response, next: NextFunction) {
+
+
+    async save(req: Request, res: Response, next: NextFunction) {
         const battletagRepository = getRepository(Battletag);
 
-        const newBattletag = await battletagRepository.save(request.body);
+        const battletag = new Battletag();
 
-        response.json(newBattletag)
+        Object.assign(battletag, req.body);
+
+        const result = await battletagRepository.save(battletag);
+
+        res.json(result)
     }
 
-    async remove(request: Request, response: Response, next: NextFunction) {
+    async remove(req: Request, res: Response, next: NextFunction) {
         const battletagRepository = getRepository(Battletag);
 
-        let battletagToRemove = await battletagRepository.findOne(request.params.id);
+        let battletag = await battletagRepository.findOne(req.params.id);
 
-        if (!battletagToRemove) {
-           return response.json({
-                message:
-                    "Battletag not found."
-            });
+        if (!battletag) {
+            return res.json({ message: "Battletag not found." });
         }
 
-        const removed = await battletagRepository.remove(battletagToRemove);
+        const result = await battletagRepository.remove(battletag);
 
-        response.json(removed)
+        res.json(result)
     }
 
 }
