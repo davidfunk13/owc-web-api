@@ -1,58 +1,61 @@
-import { getManager } from "typeorm";
 import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 import { Session } from "../../entity/Session/Session";
-import { validate } from "class-validator";
 import validateSession from "../../validation/Session/validateSession";
 import getErrors from "../../utils/getErrors/getErrors";
 
 export class SessionController {
-    async oneById(request: Request, response: Response, next: NextFunction) {
-        const sessionRepository = getRepository(Session);
+    async oneById(req: Request, res: Response, next: NextFunction) {
+        const session = await getRepository(Session).findOne(req.params.id);
 
-        const oneSession = await sessionRepository.findOne(request.params.id);
-
-        if (!oneSession) {
-            response.json({ message: "session not found." })
+        if (!session) {
+            return res.json({ message: "Session not found." })
         }
 
-        response.json(oneSession);
+        res.json(session);
     }
 
-    async save(request: Request, response: Response, next: NextFunction) {
-       const input = request.body;
+    async save(req: Request, res: Response, next: NextFunction) {
+        let { battletagId, ...sessionInput } = req.body;
 
-       const sessionRepository = getRepository(Session);
+        const battletagRepo = getRepository(Battletag);
+        const sessionRepo = getRepository(Session);
 
-        const errors = await validateSession(input);
-        
-        
+        const errors = await validateSession(sessionInput);
+
         if (errors.length) {
             const trimmedErrors = getErrors(errors);
-            return response.json({ message: "Failed to save session.", errors: trimmedErrors })
+            return res.json({ message: "Failed to save session.", errors: trimmedErrors })
         }
 
-        const session = await sessionRepository.create(input);
-        const result = await sessionRepository.save(session);
+        const session = new Session();
 
-        response.json(result)
+        Object.assign(session, sessionInput)
+
+        const battletag = await battletagRepo.findOne(battletagId);
+
+        if (!battletag) {
+            return res.json({ error: "Battletag not found." });
+        }
+
+        session.battletag = battletag;
+
+        const result = await sessionRepo.save(session)
+
+        res.json(result);
     }
 
-    async remove(request: Request, response: Response, next: NextFunction) {
-        const sessionRepository = getRepository(Session);
+    async remove(req: Request, res: Response, next: NextFunction) {
+        const sessionRepo = getRepository(Session);
+        let session = await sessionRepo.findOne(req.params.id);
 
-        let sessionToRemove = await sessionRepository.findOne(request.params.id);
-
-        if (!sessionToRemove) {
-            response.json({
-                message:
-                    "Session not found."
-            });
+        if (!session) {
+            return res.json({ message: "Session not found." });
         }
 
-        const removed = await sessionRepository.remove(sessionToRemove);
+        const result = await sessionRepo.remove(session);
 
-        response.json(removed)
+        res.json(result)
     }
 }

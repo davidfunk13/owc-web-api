@@ -6,10 +6,10 @@ export class BattletagController {
     async oneById(request: Request, response: Response, next: NextFunction) {
         const battletagRepository = getRepository(Battletag);
 
-        const oneBattletag = await battletagRepository.findOne(request.params.id);
+        const oneBattletag = await battletagRepository.findOne(request.params.id, { relations: ["sessions"] });
 
         if (!oneBattletag) {
-            response.json({ message: "Battletag not found." })
+           return response.json({ message: "Battletag not found." })
         }
 
         response.json(oneBattletag);
@@ -29,7 +29,7 @@ export class BattletagController {
         let battletagToRemove = await battletagRepository.findOne(request.params.id);
 
         if (!battletagToRemove) {
-            response.json({
+           return response.json({
                 message:
                     "Battletag not found."
             });

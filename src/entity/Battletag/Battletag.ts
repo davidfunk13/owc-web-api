@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Platform } from "../../types/Platform";
 import { Session } from "../Session/Session";
 
@@ -18,17 +18,16 @@ export class Battletag {
 
     @Column()
     playerLevel: number;
-   
+
     @Column()
     isPublic: boolean;
-   
+
     @Column()
     platform: Platform;
 
     @Column()
     portrait: string;
-    
 
-    @OneToMany(type => Session, session => session.battletag) sessions: Session[];  
-
+    @OneToMany(() => Session, session => session.battletag, { onDelete: "CASCADE" })
+    sessions: Session[]
 }
