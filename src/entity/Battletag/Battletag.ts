@@ -30,7 +30,6 @@ export class Battletag {
 
   @Column()
   @IsBoolean()
-  @IsNotEmpty()
   isPublic: boolean;
 
   @Column()

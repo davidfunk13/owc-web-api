@@ -1,9 +1,8 @@
 import { getRepository } from "typeorm";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 import getFilters from "../../utils/getFilters/getFilters";
 import QueryFilters from "../../types/QueryFilters";
-import validateBattletag from "../../validation/Battletag/validateBattletag";
 import getErrors from "../../utils/getErrors/getErrors";
 import parseBool from "../../utils/parseBool/parseBool";
 
@@ -26,8 +25,6 @@ export class BattletagController {
         }
     }
 
-
-
     async save(req: Request, res: Response) {
         const battletagRepository = getRepository(Battletag);
 
@@ -36,9 +33,9 @@ export class BattletagController {
         Object.assign(battletag, req.body);
 
         //any additional coersion that needs to take place.
-        battletag.isPublic = parseBool(battletag.isPublic)
-        battletag.level = +battletag.level
-        battletag.playerLevel = +battletag.playerLevel
+        battletag.isPublic = battletag.isPublic ? parseBool(battletag.isPublic) : undefined
+        battletag.level = battletag.level ? +battletag.level : undefined        
+        battletag.playerLevel = battletag.playerLevel ? +battletag.playerLevel : undefined
 
         try {
             const result = await battletagRepository.save(battletag);

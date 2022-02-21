@@ -1,7 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, OneToOne, OneToMany, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, OneToOne, OneToMany, JoinColumn, BeforeInsert, BeforeUpdate } from "typeorm";
 import Role from "../../types/Role";
 import { Battletag } from "../Battletag/Battletag";
-import { Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, IsNotEmpty } from "class-validator";
+import { Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, IsNotEmpty, validateOrReject } from "class-validator";
 
 @Entity()
 export class Session extends BaseEntity {
@@ -47,4 +47,10 @@ export class Session extends BaseEntity {
 
     @ManyToOne(() => Battletag, battletag => battletag.sessions, { onDelete: "CASCADE" })
     battletag: Battletag
+    
+    @BeforeInsert()
+    @BeforeUpdate()
+    async validate() {
+      await validateOrReject(this);
+    }
 }

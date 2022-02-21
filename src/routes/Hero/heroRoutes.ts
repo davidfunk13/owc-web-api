@@ -6,7 +6,7 @@ const heroApi = express.Router();
 const heroController = new HeroController()
 
 heroApi.get('/', heroController.all);
-heroApi.get('/:role', heroController.role);
-heroApi.get('/one/:name', heroController.oneByName);
+heroApi.get('/one', heroController.one);
+heroApi.get('/role/:role', heroController.role);
 
 export default heroApi

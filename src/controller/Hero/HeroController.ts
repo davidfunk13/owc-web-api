@@ -2,39 +2,44 @@
 import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { Hero } from "../../entity/Hero/Hero";
-import Role from "../../types/Role";
 import roleStringToNumberMap from "../../utils/maps/role/roleStringToNumberMap";
 
 
 export class HeroController {
-    async all(request: Request, response: Response, next: NextFunction) {
+    async all(req: Request, res: Response, next: NextFunction) {
         const heroRepository = getRepository(Hero);
 
-        const allHeroes = await heroRepository.find();
+        const heroes = await heroRepository.find();
 
-        response.json(allHeroes)
+        return res.status(200).json({ message: "All heroes found", data: heroes })
     }
 
-    async oneByName(request: Request, response: Response, next: NextFunction) {
+    async one(req: Request, res: Response) {
+        const heroRepository = getRepository(Hero);
+        const name = req.query.name as string;
+
+        if (!name) {
+            return res.status(422).json({ message: "Bad Request" })
+        }
+
+        const hero = await heroRepository.findOne({ name });
+
+        if (!hero) {
+            return res.status(404).json({ message: "Hero not found" })
+        }
+
+        return res.status(200).json({ message: "Hero found.", data: hero })
+    }
+
+    async role(req: Request, res: Response) {
         const heroRepository = getRepository(Hero);
 
-        const oneHero = await heroRepository.findOne({
-            name: request.params.name
-        });
+        const heroes = await heroRepository.find({ role: roleStringToNumberMap[req.params.role] });
 
-        response.json(oneHero)
+        if (!heroes.length) {
+            return res.status(404).json({ message: "No Heroes found", data: [] })
+        }
+
+        return res.status(200).json({ message: `Heroes Found for role ${req.params.role}`, data: heroes })
     }
-
-    async role(request: Request, response: Response, next: NextFunction) {
-        const heroRepository = getRepository(Hero);
-
-        const byRole = await heroRepository.find({
-            role: roleStringToNumberMap[request.params.role]
-        });
-
-        response.json(byRole)
-    }
-
-
-
 }
