@@ -3,8 +3,6 @@ import { NextFunction, Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 import getFilters from "../../utils/getFilters/getFilters";
 import QueryFilters from "../../types/QueryFilters";
-import HttpError from "../../types/HttpError";
-import HttpResponse from "../../types/HttpResponse";
 
 export class BattletagController {
     async oneById(req: Request, res: Response) {
@@ -34,23 +32,30 @@ export class BattletagController {
 
         Object.assign(battletag, req.body);
 
-        const result = await battletagRepository.save(battletag);
+        try {
+            const result = await battletagRepository.save(battletag);
 
-        res.json(result)
+            return res.status(200).json(result)
+        } catch (err) {
+            return res.status(500).json({ message: "Something went wrong inserting this battletag." })
+        }
     }
 
     async remove(req: Request, res: Response, next: NextFunction) {
         const battletagRepository = getRepository(Battletag);
+        try {
+            const battletag = await battletagRepository.findOne(req.params.id);
 
-        let battletag = await battletagRepository.findOne(req.params.id);
+            if (!battletag) {
+                return res.status(404).json({ message: "Battletag not found." });
+            }
 
-        if (!battletag) {
-            return res.json({ message: "Battletag not found." });
+            const result = await battletagRepository.remove(battletag);
+
+            return res.status(200).json({ message: "Battletag successfully removed.", data: result })
+        } catch (err) {
+            return res.status(500).json({ message: "Something went wrong removing this battletag." })
         }
-
-        const result = await battletagRepository.remove(battletag);
-
-        res.json(result)
     }
 
 }
