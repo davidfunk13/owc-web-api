@@ -3,6 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 import getFilters from "../../utils/getFilters/getFilters";
 import QueryFilters from "../../types/QueryFilters";
+import validateBattletag from "../../validation/Battletag/validateBattletag";
+import getErrors from "../../utils/getErrors/getErrors";
+import parseBool from "../../utils/parseBool/parseBool";
 
 export class BattletagController {
     async oneById(req: Request, res: Response) {
@@ -17,7 +20,7 @@ export class BattletagController {
                 return res.status(400).json({ message: "Battletag not found." })
             }
 
-            return res.status(200).json({ message: "Battletag Found", data: battletag })
+            return res.status(200).json({ message: "Battletag found.", data: battletag })
         } catch (err) {
             return res.status(500).json(err)
         }
@@ -32,17 +35,24 @@ export class BattletagController {
 
         Object.assign(battletag, req.body);
 
+        //any additional coersion that needs to take place.
+        battletag.isPublic = parseBool(battletag.isPublic)
+        battletag.level = +battletag.level
+        battletag.playerLevel = +battletag.playerLevel
+
         try {
             const result = await battletagRepository.save(battletag);
 
-            return res.status(200).json(result)
+            return res.status(200).json({message: "Battletag saved.", data: result})
         } catch (err) {
-            return res.status(500).json({ message: "Something went wrong inserting this battletag." })
+            const errors = getErrors(err);
+            return res.status(500).json({ message: "Something went wrong inserting this battletag.", errors })
         }
     }
 
-    async remove(req: Request, res: Response, next: NextFunction) {
+    async remove(req: Request, res: Response, ) {
         const battletagRepository = getRepository(Battletag);
+        
         try {
             const battletag = await battletagRepository.findOne(req.params.id);
 

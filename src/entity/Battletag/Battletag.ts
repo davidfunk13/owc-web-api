@@ -1,41 +1,55 @@
-import { IsNotEmpty } from "class-validator";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Contains, IsBoolean, IsInt, IsNotEmpty, IsString, validateOrReject } from "class-validator";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate } from "typeorm";
 import { Platform } from "../../types/Platform";
 import { Session } from "../Session/Session";
 
 @Entity()
 export class Battletag {
-    @PrimaryGeneratedColumn("increment")
-    id: number;
+  @PrimaryGeneratedColumn("increment")
+  id: number;
 
-    @Column()
-    @IsNotEmpty()
-    name: string;
+  @Column()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+  
+  @Column()
+  @IsNotEmpty()
+  @IsString()
+  urlName: string;
 
-    @Column()
-    @IsNotEmpty()
-    urlName: string;
+  @Column()
+  @IsNotEmpty()
+  @IsInt()
+  level: number;
 
-    @Column()
-    @IsNotEmpty()
-    level: number;
+  @Column()
+  @IsNotEmpty()
+  @IsInt()
+  playerLevel: number;
 
-    @Column()
-    @IsNotEmpty()
-    playerLevel: number;
+  @Column()
+  @IsBoolean()
+  @IsNotEmpty()
+  isPublic: boolean;
 
-    @Column()
-    @IsNotEmpty()
-    isPublic: boolean;
+  @Column()
+  @IsNotEmpty()
+  @IsString()
+  platform: Platform;
+  
+  @Column()
+  @IsNotEmpty()
+  @IsString()
+  portrait: string;
 
-    @Column()
-    @IsNotEmpty()
-    platform: Platform;
+  @OneToMany(() => Session, session => session.battletag, { onDelete: "CASCADE" })
+  sessions: Session[]
 
-    @Column()
-    @IsNotEmpty()
-    portrait: string;
+  @BeforeInsert()
+  @BeforeUpdate()
+  async validate() {
+    await validateOrReject(this);
+  }
 
-    @OneToMany(() => Session, session => session.battletag, { onDelete: "CASCADE" })
-    sessions: Session[]
 }

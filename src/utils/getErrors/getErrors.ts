@@ -4,11 +4,24 @@ import ErrorType from "../../types/ErrorType";
 
 const getErrors = (errors: ValidationError[]) => {
     const res = []
-    
+
+    function extractValues(constraints: { [key: string]: string }) {
+
+        let values = [];
+
+        for (const [_, value] of Object.entries(constraints)) {
+            values.push(value);
+        }
+
+        return values;
+    }
+
     errors.map(error => {
-        res.push({ value: error.value, constraints: error.constraints })
+        res.push({
+            value: error.value, property: error.property, constraints: extractValues(error.constraints)
+        })
     })
-    
+
     return res;
 };
 
