@@ -1,30 +1,33 @@
 import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
+import getFilters from "../../utils/getFilters/getFilters";
+import QueryFilters from "../../types/QueryFilters";
+import HttpError from "../../types/HttpError";
+import HttpResponse from "../../types/HttpResponse";
 
 export class BattletagController {
-    async oneById(req: Request, res: Response, next: NextFunction) {
+    async oneById(req: Request, res: Response) {
         const battletagRepository = getRepository(Battletag);
-        
-        
-        //with[]="" params in express
-        // use them for relations!
-        //  let filters = req.query.with
 
-        const battletag = await battletagRepository.findOne(req.params.id, {
-            relations: ["sessions"]
-        });
+        const filters = getFilters(req.query.with as QueryFilters)
 
-        if (!battletag) {
-            return res.json({ message: "Battletag not found." })
+        try {
+            const battletag = await battletagRepository.findOne(req.params.id, { relations: filters });
+
+            if (!battletag) {
+                return res.status(400).json({ message: "Battletag not found." })
+            }
+
+            return res.status(200).json({ message: "Battletag Found", data: battletag })
+        } catch (err) {
+            return res.status(500).json(err)
         }
-
-        res.json(battletag);
     }
 
 
 
-    async save(req: Request, res: Response, next: NextFunction) {
+    async save(req: Request, res: Response) {
         const battletagRepository = getRepository(Battletag);
 
         const battletag = new Battletag();
