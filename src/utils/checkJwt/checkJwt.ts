@@ -3,7 +3,7 @@ import jwt from 'express-jwt';
 import JwksRsa from 'jwks-rsa';
 
 config();
-console.log(process.env.DOMAIN)
+
 export const checkJwt = jwt({
     secret: JwksRsa.expressJwtSecret({
         cache: true,
