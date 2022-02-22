@@ -1,4 +1,4 @@
-import { HeroController } from "../../controller/Hero/HeroController"
+import { HeroController } from "../../controller/Hero/heroController"
 import express from 'express'
 
 const heroApi = express.Router();

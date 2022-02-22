@@ -42,6 +42,7 @@ export class Battletag {
   @IsString()
   portrait: string;
 
+
   @OneToMany(() => Session, session => session.battletag, { onDelete: "CASCADE" })
   sessions: Session[]
 

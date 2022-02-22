@@ -2,11 +2,32 @@ import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 import { Session } from "../../entity/Session/Session";
-import validateSession from "../../validation/Session/validateSession";
 import getErrors from "../../utils/getErrors/getErrors";
 
 export class SessionController {
-    async oneById(req: Request, res: Response, next: NextFunction) {
+    async all(req: Request, res: Response) {
+        const params = req.query.battletag;
+
+        if(!params || isNaN(+params)){
+            return res.status(422).json({ message: "Battletag Id not provided." })
+        }
+        
+        const battletag = await getRepository(Battletag).findOne(+params, { relations: ["sessions"] });
+
+        if (!battletag) {
+            return res.status(404).json({ message: "Battletag not found." })
+        }
+
+        const sessions = battletag.sessions;
+
+        if (!sessions.length) {
+            return res.status(404).json({ message: "No sessions for this battletag were found.", data: sessions })
+        }
+
+        return res.status(200).json({ message: "Sessions retrieved successfully.", data: sessions })
+    }
+
+    async one(req: Request, res: Response, next: NextFunction) {
         const session = await getRepository(Session).findOne(req.params.id);
 
         if (!session) {
@@ -30,7 +51,7 @@ export class SessionController {
         const battletag = await battletagRepo.findOne({ id: battletagId });
 
         if (!battletag) {
-            return res.json({ error: "Battletag not found." });
+            return res.status(404).json({ message: "Battletag not found." });
         }
 
         session.tankSrStart = +session.tankSrStart;
@@ -52,15 +73,28 @@ export class SessionController {
     }
 
     async remove(req: Request, res: Response, next: NextFunction) {
+        const params = req.params.id;
+
         const sessionRepo = getRepository(Session);
-        let session = await sessionRepo.findOne(req.params.id);
+
+        if (!params || isNaN(+params)) {
+            return res.status(422).json({ message: "Session id not provided." })
+        }
+
+        let session = await sessionRepo.findOne(params);
 
         if (!session) {
             return res.json({ message: "Session not found." });
         }
 
-        const result = await sessionRepo.remove(session);
+        try {
+            const result = await sessionRepo.remove(session);
+            return res.status(200).json({ message: "Session successfully removed.", data: result })
 
-        res.json(result)
+        } catch (err) {
+
+            res.status(500).json({ message: "something went wrong removing this session." })
+        }
+
     }
 }

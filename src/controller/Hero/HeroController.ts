@@ -22,7 +22,7 @@ export class HeroController {
             return res.status(422).json({ message: "Bad Request" })
         }
 
-        const hero = await heroRepository.findOne({ name });
+        const hero = await heroRepository.findOne({ urlName: name });
 
         if (!hero) {
             return res.status(404).json({ message: "Hero not found" })

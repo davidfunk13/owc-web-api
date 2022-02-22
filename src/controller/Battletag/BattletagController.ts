@@ -7,7 +7,7 @@ import getErrors from "../../utils/getErrors/getErrors";
 import parseBool from "../../utils/parseBool/parseBool";
 
 export class BattletagController {
-    async oneById(req: Request, res: Response) {
+    async one(req: Request, res: Response) {
         const battletagRepository = getRepository(Battletag);
 
         const filters = getFilters(req.query.with as QueryFilters)
@@ -34,22 +34,22 @@ export class BattletagController {
 
         //any additional coersion that needs to take place.
         battletag.isPublic = battletag.isPublic ? parseBool(battletag.isPublic) : undefined
-        battletag.level = battletag.level ? +battletag.level : undefined        
+        battletag.level = battletag.level ? +battletag.level : undefined
         battletag.playerLevel = battletag.playerLevel ? +battletag.playerLevel : undefined
 
         try {
             const result = await battletagRepository.save(battletag);
 
-            return res.status(200).json({message: "Battletag saved.", data: result})
+            return res.status(200).json({ message: "Battletag saved.", data: result })
         } catch (err) {
             const errors = getErrors(err);
             return res.status(500).json({ message: "Something went wrong inserting this battletag.", errors })
         }
     }
 
-    async remove(req: Request, res: Response, ) {
+    async remove(req: Request, res: Response,) {
         const battletagRepository = getRepository(Battletag);
-        
+
         try {
             const battletag = await battletagRepository.findOne(req.params.id);
 
