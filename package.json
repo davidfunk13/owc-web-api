@@ -23,6 +23,7 @@
    },
    "scripts": {
       "start": "node build/index.js",
+      "test": "jest",
       "dev": "cross-env DEV=dev nodemon src/index.ts",
       "build": "tsc"
    }

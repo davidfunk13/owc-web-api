@@ -1,4 +1,4 @@
-import { GameController} from "../../controller/game/gameController"
+import { GameController} from "../../controller/Game/gameController"
 import express from 'express'
 import { checkJwt } from "../../utils/checkJwt/checkJwt";
 
