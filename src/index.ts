@@ -1,24 +1,23 @@
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import express from "express";
-import routes from "./routes";
-import mapList from "./utils/mapList";
 
 const PORT = process.env.PORT || 3001;
 
+const app = express();
+
 createConnection()
     .then(async () => {
-        const app = express();
         
         app.use(express.json());
         
         app.use(express.urlencoded({ extended: true }))
-
-        routes.map(route => app.use(route.path, route.handler));
 
         // start express server
         app.listen(PORT, () => {
             console.log("Server listening to incoming requests...")
         });
     })
-    .catch(error => console.log(error));
+.catch(error => console.log(error));
+
+export default app;
