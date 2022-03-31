@@ -3,105 +3,92 @@ import { NextFunction, Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 import { Session } from "../../entity/Session/Session";
 import getErrors from "../../utils/getErrors/getErrors";
+import { Game } from "../../entity/Game/Game";
 
 export class GameController {
     async all(req: Request, res: Response) {
-        res.json({ message: "remove" })
+        const params = req.query.session;
 
-        // const params = req.query.battletag;
+        if (!params || isNaN(+params)) {
+            return res.status(422).json({ message: "Session Id not provided." })
+        }
 
-        // if(!params || isNaN(+params)){
-        //     return res.status(422).json({ message: "Battletag Id not provided." })
-        // }
+        const session = await getRepository(Session).findOne(+params, { relations: ["sessions"] });
 
-        // const battletag = await getRepository(Battletag).findOne(+params, { relations: ["sessions"] });
+        if (!session) {
+            return res.status(404).json({ message: "Session not found." })
+        }
 
-        // if (!battletag) {
-        //     return res.status(404).json({ message: "Battletag not found." })
-        // }
+        const games = session.games;
 
-        // const sessions = battletag.sessions;
+        if (!games.length) {
+            return res.status(404).json({ message: "No games for this session were found.", data: games })
+        }
 
-        // if (!sessions.length) {
-        //     return res.status(404).json({ message: "No sessions for this battletag were found.", data: sessions })
-        // }
+        return res.status(200).json({ message: "Games retrieved successfully.", data: games })
 
-        // return res.status(200).json({ message: "Sessions retrieved successfully.", data: sessions })
     }
 
     async one(req: Request, res: Response, next: NextFunction) {
-        res.json({ message: "get one game" })
+        const game = await getRepository(Game).findOne(req.params.id);
 
-        // const session = await getRepository(Session).findOne(req.params.id);
+        if (!game) {
+            return res.status(404).json({ message: "Game not found." })
+        }
 
-        // if (!session) {
-        //     return res.status(404).json({ message: "Session not found." })
-        // }
-
-        // return res.status(200).json({ message: "Session found.", data: session });
+        return res.status(200).json({ message: "Game found.", data: game });
     }
 
-    async save(req: Request, res: Response, next: NextFunction) {
-        res.json({ message: "save game" })
+    async save(req: Request, res: Response, next: NextFunction ) {
+        let { sessionId, ...gameInput } = req.body;
+       
+        const sessionRepo = getRepository(Session);
+        
+        const gameRepo = getRepository(Game);
+        
+        const game = new Game();
+        
+        Object.assign(game, gameInput)
 
-        // let { battletagId, ...sessionInput } = req.body;
+        const session = await sessionRepo.findOne({ id: sessionId });
 
-        // const battletagRepo = getRepository(Battletag);
+        if (!session) {
+            return res.status(404).json({ message: "Session not found." });
+        }
 
-        // const sessionRepo = getRepository(Session);
+        game.session = session;
 
-        // const session = new Session();
+        try {
+            const result = await gameRepo.save(game)
+            return res.status(200).json({ message: "Game successfully saved to session.", data: result })
+        } catch (err) {
+            const errors = getErrors(err);
 
-        // Object.assign(session, sessionInput)
-
-        // const battletag = await battletagRepo.findOne({ id: battletagId });
-
-        // if (!battletag) {
-        //     return res.status(404).json({ message: "Battletag not found." });
-        // }
-
-        // session.tankSrStart = +session.tankSrStart;
-        // session.tankSrCurrent = +session.tankSrCurrent;
-        // session.damageSrStart = +session.damageSrStart;
-        // session.damageSrCurrent = +session.damageSrCurrent;
-        // session.supportSrStart = +session.supportSrStart;
-        // session.supportSrCurrent = +session.supportSrCurrent;
-        // session.battletag = battletag;
-
-        // try {
-        //     const result = await sessionRepo.save(session)
-        //     return res.status(200).json({ message: "Session successfully saved to battletag.", data: result })
-        // } catch (err) {
-        //     const errors = getErrors(err);
-
-        //     return res.status(422).json({ message: "There was a problem saving this session", errors })
-        // }
+            return res.status(422).json({ message: "There was a problem saving this game", errors })
+        }
     }
 
     async remove(req: Request, res: Response, next: NextFunction) {
-        res.json({ message: "remove game" })
-        // const params = req.params.id;
+        const params = req.params.id;
 
-        // const sessionRepo = getRepository(Session);
+        const gameRepo = getRepository(Game);
 
-        // if (!params || isNaN(+params)) {
-        //     return res.status(422).json({ message: "Session id not provided." })
-        // }
+        if (!params || isNaN(+params)) {
+            return res.status(422).json({ message: "Game Id not provided." })
+        }
 
-        // let session = await sessionRepo.findOne(params);
+        let game = await gameRepo.findOne(params);
 
-        // if (!session) {
-        //     return res.json({ message: "Session not found." });
-        // }
+        if (!game) {
+            return res.json({ message: "Game not found." });
+        }
 
-        // try {
-        //     const result = await sessionRepo.remove(session);
-        //     return res.status(200).json({ message: "Session successfully removed.", data: result })
-
-        // } catch (err) {
-
-        //     res.status(500).json({ message: "something went wrong removing this session." })
-        // }
+        try {
+            const result = await gameRepo.remove(game);
+            return res.status(200).json({ message: "Game successfully removed.", data: result })
+        } catch (err) {
+            res.status(500).json({ message: "Something went wrong removing this game." })
+        }
 
     }
 }

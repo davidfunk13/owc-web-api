@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from "typeorm";
 import Role from "../../types/Role";
-import { Min, Max, IsNotEmpty, IsNumber } from "class-validator";
+import { Min, Max, IsNotEmpty, IsNumber, validateOrReject } from "class-validator";
 import { Session } from "../Session/Session";
-import GameType from "../../types/GameTypes";
 import GameOutcome from "../../types/GameOutcome";
+import { isNull } from "util";
 
 
 @Entity()
@@ -13,6 +13,9 @@ export class Game extends BaseEntity {
 
     @Column()
     @IsNotEmpty()
+    @IsNumber()
+    @Min(0)
+    @Max(2)
     role: Role
 
     @Column()
@@ -20,12 +23,6 @@ export class Game extends BaseEntity {
     @Min(1)
     @Max(19)
     matchLocationId: number
-
-    @Column()
-    @IsNotEmpty()
-    @Min(0)
-    @Max(3)
-    gameTypeId: GameType
 
     @Column()
     @IsNotEmpty()
@@ -52,40 +49,80 @@ export class Game extends BaseEntity {
     @Max(5000)
     skillRatingOut: number
 
-    //non-required fields
-    //Additional Heroes Played
-    @Column()
+    @Column({ nullable: true })
     @IsNumber()
-    heroId2: number
+    heroId2: number | undefined | null
 
-    @Column()
+    @Column({ nullable: true })
     @IsNumber()
-    heroId3: number
+    heroId3: number | null
 
-    //If control map, Have these for where the rounds take place and  what the outcome was.
-    @Column()
+    @Column({ nullable: true })
     roundOneLocation: string
 
-    @Column()
+    @Column({ nullable: true })
     @Min(0)
-    @Max(2)
-    roundOneOutcome: GameOutcome
+    @Max(1)
+    @IsNumber()
+    roundOneOutcome: number | null
 
-    @Column()
+    @Column({ nullable: true })
     roundTwoLocation: string
-    @Column()
-    @Min(0)
-    @Max(2)
-    roundTwoOutcome: GameOutcome
 
-    @Column()
-    roundThreeLocation: string
-    @Column()
+    @Column({ nullable: true })
     @Min(0)
-    @Max(2)
-    roundThreeOutcome: GameOutcome
+    @Max(1)
+    @IsNumber()
+    roundTwoOutcome: number | null
+
+    @Column({ nullable: true })
+    roundThreeLocation: string
+    
+    @Column({ nullable: true,  })
+    @Min(0)
+    @Max(1)
+    @IsNumber()
+    roundThreeOutcome: number | null
 
     //Relation to session
     @ManyToOne(() => Session, session => session.games, { onDelete: "CASCADE" })
     session: Session
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async validate() { 
+        if (!this.heroId2 && !isNull(this.heroId2)) {
+            this.heroId2 = null;
+        }
+
+        if (!this.heroId3 && !isNull(this.heroId3)) {
+            this.heroId3 = null;
+        }
+
+        if (!this.roundOneOutcome && !isNull(this.roundOneOutcome)) {
+            this.roundOneOutcome = null;
+        }
+        
+        if (!this.roundOneLocation && !isNull(this.roundOneLocation)) {
+            this.roundOneLocation = null;
+        }
+
+        if (!this.roundTwoOutcome && !isNull(this.roundTwoOutcome)) {
+            this.roundTwoOutcome = null;
+        }
+
+        if (!this.roundTwoLocation && !isNull(this.roundTwoLocation)) {
+            this.roundTwoLocation = null;
+        }
+
+        if (!this.roundThreeOutcome && !isNull(this.roundThreeOutcome)) {
+            this.roundThreeOutcome = null;
+        }
+
+        if (!this.roundThreeLocation && !isNull(this.roundThreeLocation)) {
+            this.roundThreeLocation = null;
+        }
+        await validateOrReject(this);
+    }
+
 }

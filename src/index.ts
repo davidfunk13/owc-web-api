@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 import express from "express";
 import routes from "./routes";
-import mapList from "./utils/mapList";
 
 const PORT = process.env.PORT || 3001;
 
@@ -22,3 +21,4 @@ createConnection()
         });
     })
     .catch(error => console.log(error));
+ 

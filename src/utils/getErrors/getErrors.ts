@@ -16,6 +16,11 @@ const getErrors = (errors: ValidationError[]) => {
         return values;
     }
 
+    if (!errors.length) {
+        res.push({ errors })
+        return res;
+    }
+
     errors.map(error => {
         res.push({
             value: error.value, property: error.property, constraints: extractValues(error.constraints)
