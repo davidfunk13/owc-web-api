@@ -8,10 +8,10 @@ export class SessionController {
     async all(req: Request, res: Response) {
         const params = req.query.battletag;
 
-        if(!params || isNaN(+params)){
+        if (!params || isNaN(+params)) {
             return res.status(422).json({ message: "Battletag Id not provided." })
         }
-        
+
         const battletag = await getRepository(Battletag).findOne(+params, { relations: ["sessions"] });
 
         if (!battletag) {
@@ -72,6 +72,48 @@ export class SessionController {
         }
     }
 
+    async update(req: Request, res: Response) {
+        const {
+            battletagId,
+            id, 
+            tankSrStart,
+            damageSrStart,
+            supportSrStart,
+            ...sessionInput
+         } = req.body;
+
+        
+        const sessionRepo = getRepository(Session);
+
+        const session = await sessionRepo.findOne(id, { relations: ["battletag"] });
+        
+        if (!session) {
+            return res.status(404).json({ message: "Session not found." });
+        }
+
+        if (session.battletag.id !== +battletagId) {
+            return res.status(422).json({ message: "Something went wrong." });
+        }
+
+        Object.assign(session, sessionInput);
+
+        session.tankSrStart = +session.tankSrStart;
+        session.tankSrCurrent = +session.tankSrCurrent;
+        session.damageSrStart = +session.damageSrStart;
+        session.damageSrCurrent = +session.damageSrCurrent;
+        session.supportSrStart = +session.supportSrStart;
+        session.supportSrCurrent = +session.supportSrCurrent;
+        
+        try {
+            const result = await sessionRepo.save(session)
+            return res.status(200).json({ message: "Session successfully updated.", data: result })
+        } catch (err) {
+            const errors = getErrors(err);
+
+            return res.status(422).json({ message: "There was a problem updating this session", errors })
+        }
+    }
+
     async remove(req: Request, res: Response, next: NextFunction) {
         const params = req.params.id;
 
@@ -92,7 +134,6 @@ export class SessionController {
             return res.status(200).json({ message: "Session successfully removed.", data: result })
 
         } catch (err) {
-
             res.status(500).json({ message: "something went wrong removing this session." })
         }
 

@@ -68,6 +68,41 @@ export class GameController {
         }
     }
 
+    async update(req: Request, res: Response) {
+        const {
+            id, 
+            sessionId,
+            ...gameInput
+         } = req.body;
+
+        
+        const gameRepo = getRepository(Game);
+
+        const game = await gameRepo.findOne(id, { relations: ["session"] });
+        
+        if (!game) {
+            return res.status(404).json({ message: "Game not found." });
+        }
+
+        if (game.session.id !== +sessionId) {
+            return res.status(422).json({ message: "Something went wrong." });
+        }
+
+        Object.assign(game, gameInput);
+
+       
+        try {
+            const result = await gameRepo.save(game);
+
+            return res.status(200).json({ message: "Game successfully updated.", data: result })
+        } catch (err) {
+            const errors = getErrors(err);
+
+            return res.status(422).json({ message: "There was a problem updating this game", errors })
+        }
+    }
+
+
     async remove(req: Request, res: Response, next: NextFunction) {
         const params = req.params.id;
 
