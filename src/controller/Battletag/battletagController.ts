@@ -8,11 +8,11 @@ import parseBool from "../../utils/parseBool/parseBool";
 
 export class BattletagController {
     async one(req: Request, res: Response) {
-        const battletagRepository = getRepository(Battletag);
-
-        const filters = getFilters(req.query.with as QueryFilters)
-
         try {
+            const battletagRepository = getRepository(Battletag);
+
+            const filters = getFilters(req.query.with as QueryFilters)
+
             const battletag = await battletagRepository.findOne(req.params.id, { relations: filters });
 
             if (!battletag) {
@@ -21,8 +21,9 @@ export class BattletagController {
 
             return res.status(200).json({ message: "Battletag found.", data: battletag })
         } catch (err) {
-            return res.status(500).json(err)
+            return res.status(500).json({ message: "Something went wrong." })
         }
+
     }
 
     async save(req: Request, res: Response) {
@@ -42,15 +43,14 @@ export class BattletagController {
 
             return res.status(200).json({ message: "Battletag saved.", data: result })
         } catch (err) {
-            const errors = getErrors(err);
-            return res.status(500).json({ message: "Something went wrong inserting this battletag.", errors })
+            return res.status(500).json({ message: "Something went wrong." })
         }
     }
 
-    async remove(req: Request, res: Response,) {
-        const battletagRepository = getRepository(Battletag);
-
+    async remove(req: Request, res: Response,) {       
         try {
+            const battletagRepository = getRepository(Battletag);
+ 
             const battletag = await battletagRepository.findOne(req.params.id);
 
             if (!battletag) {
@@ -61,7 +61,7 @@ export class BattletagController {
 
             return res.status(200).json({ message: "Battletag successfully removed.", data: result })
         } catch (err) {
-            return res.status(500).json({ message: "Something went wrong removing this battletag." })
+            return res.status(500).json({ message: "Something went wrong." })
         }
     }
 

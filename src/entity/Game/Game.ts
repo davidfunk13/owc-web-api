@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from "typeorm";
 import Role from "../../types/Role";
-import { Min, Max, IsNotEmpty, IsNumber, validateOrReject } from "class-validator";
+import { Min, Max, IsNotEmpty, IsNumber, validateOrReject, IsNumberString, IsOptional } from "class-validator";
 import { Session } from "../Session/Session";
 import GameOutcome from "../../types/GameOutcome";
 import { isNull } from "util";
@@ -50,47 +50,64 @@ export class Game extends BaseEntity {
     skillRatingOut: number
 
     @Column({ nullable: true })
+    @IsOptional()
     @IsNumber()
-    heroId2: number | undefined | null
+    heroId2: number | null
 
     @Column({ nullable: true })
     @IsNumber()
+    @IsOptional()
     heroId3: number | null
 
     @Column({ nullable: true })
-    roundOneLocation: string
+    roundOneLocation: string | null
 
     @Column({ nullable: true })
     @Min(0)
     @Max(1)
     @IsNumber()
+    @IsOptional()
     roundOneOutcome: number | null
 
     @Column({ nullable: true })
-    roundTwoLocation: string
+    roundTwoLocation: string | null
 
     @Column({ nullable: true })
     @Min(0)
     @Max(1)
     @IsNumber()
+    @IsOptional()
     roundTwoOutcome: number | null
 
     @Column({ nullable: true })
-    roundThreeLocation: string
-    
-    @Column({ nullable: true,  })
+    roundThreeLocation: string | null
+
+    @Column({ nullable: true, })
     @Min(0)
     @Max(1)
     @IsNumber()
+    @IsOptional()
     roundThreeOutcome: number | null
 
-    //Relation to session
     @ManyToOne(() => Session, session => session.games, { onDelete: "CASCADE" })
     session: Session
 
     @BeforeInsert()
     @BeforeUpdate()
-    async validate() { 
+    async validate() {
+        this.matchLocationId = +this.matchLocationId
+        this.heroId = +this.heroId
+        this.matchOutcome = +this.matchOutcome
+        this.skillRatingIn = +this.skillRatingIn
+        this.skillRatingOut = +this.skillRatingOut
+        this.role = +this.role
+        this.heroId2 = +this.heroId2
+        this.heroId3 = +this.heroId3
+        this.roundOneOutcome = +this.roundOneOutcome
+        this.roundTwoOutcome = +this.roundTwoOutcome
+        this.roundThreeOutcome = +this.roundThreeOutcome
+
+ 
         if (!this.heroId2 && !isNull(this.heroId2)) {
             this.heroId2 = null;
         }
@@ -102,7 +119,7 @@ export class Game extends BaseEntity {
         if (!this.roundOneOutcome && !isNull(this.roundOneOutcome)) {
             this.roundOneOutcome = null;
         }
-        
+
         if (!this.roundOneLocation && !isNull(this.roundOneLocation)) {
             this.roundOneLocation = null;
         }
@@ -122,6 +139,7 @@ export class Game extends BaseEntity {
         if (!this.roundThreeLocation && !isNull(this.roundThreeLocation)) {
             this.roundThreeLocation = null;
         }
+
         await validateOrReject(this);
     }
 
