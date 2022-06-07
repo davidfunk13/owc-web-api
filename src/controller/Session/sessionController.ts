@@ -6,6 +6,7 @@ import getErrors from "../../utils/getErrors/getErrors";
 import getFilters from "../../utils/getFilters/getFilters";
 import QueryFilters from "../../types/QueryFilters";
 import { readJsonConfigFile } from "typescript";
+import { AppDataSource } from "../../datasource";
 
 export class SessionController {
     async all(req: Request, res: Response) {
@@ -16,9 +17,9 @@ export class SessionController {
                 return res.status(422).json({ message: "Battletag Id not provided." })
             }
 
-            const battletagRepo =  getRepository(Battletag)
+            const battletagRepo =  AppDataSource.getRepository(Battletag)
             
-            const battletag = await battletagRepo.findOne(+params, { relations: ["sessions"] });
+            const battletag = await battletagRepo.findOne({where: {id: +params}, relations: ["sessions"] });
 
             if (!battletag) {
                 return res.status(404).json({ message: "Battletag not found." })
@@ -38,11 +39,11 @@ export class SessionController {
 
     async one(req: Request, res: Response, next: NextFunction) {
         try {
-            const sessionRepo = getRepository(Session);
+            const sessionRepo = AppDataSource.getRepository(Session);
 
             const filters = getFilters(req.query.with as QueryFilters);
-
-            const session = await sessionRepo.findOne(req.params.id, { relations: filters })
+            
+            const session = await sessionRepo.findOne({where: {id: +req.params.id},  relations: filters })
 
             if (!session) {
                 return res.status(404).json({ message: "Session not found." })
@@ -58,15 +59,15 @@ export class SessionController {
         try {
             let { battletagId, ...sessionInput } = req.body;
 
-            const battletagRepo = getRepository(Battletag);
+            const battletagRepo = AppDataSource.getRepository(Battletag);
 
-            const sessionRepo = getRepository(Session);
+            const sessionRepo = AppDataSource.getRepository(Session);
 
             const session = new Session();
 
             Object.assign(session, sessionInput)
 
-            const battletag = await battletagRepo.findOne({ id: battletagId });
+            const battletag = await battletagRepo.findOneBy({ id: battletagId });
 
             if (!battletag) {
                 return res.status(404).json({ message: "Battletag not found." });
@@ -100,13 +101,13 @@ export class SessionController {
                 ...sessionInput
             } = req.body;
 
-            const sessionRepo = getRepository(Session);
+            const sessionRepo = AppDataSource.getRepository(Session);
 
             if (!id) {
                 return res.status(404).json({ message: "Session not found." });
             }
 
-            const session = await sessionRepo.findOne(id, { relations: ["battletag"] });
+            const session = await sessionRepo.findOne({where: {id},  relations: ["battletag"] });
 
             if (!session) {
                 return res.status(404).json({ message: "Session not found." });
@@ -136,13 +137,13 @@ export class SessionController {
         try {
             const params = req.params.id;
 
-            const sessionRepo = getRepository(Session);
+            const sessionRepo = AppDataSource.getRepository(Session);
 
             if (!params || isNaN(+params)) {
                 return res.status(422).json({ message: "Session Id not provided." })
             }
 
-            let session = await sessionRepo.findOne(params);
+            let session = await sessionRepo.findOneBy({id:+params});
 
             if (!session) {
                 return res.json({ message: "Session not found." });

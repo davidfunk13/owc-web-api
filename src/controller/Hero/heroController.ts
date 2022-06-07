@@ -3,11 +3,12 @@ import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { Hero } from "../../entity/Hero/Hero";
 import roleStringToNumberMap from "../../utils/maps/role/roleStringToNumberMap";
+import { AppDataSource } from "../../datasource";
 
 
 export class HeroController {
     async all(req: Request, res: Response, next: NextFunction) {
-        const heroRepository = getRepository(Hero);
+        const heroRepository = AppDataSource.getRepository(Hero);
 
         const heroes = await heroRepository.find();
 
@@ -15,14 +16,14 @@ export class HeroController {
     }
 
     async one(req: Request, res: Response) {
-        const heroRepository = getRepository(Hero);
+        const heroRepository = AppDataSource.getRepository(Hero);
         const name = req.query.name as string;
 
         if (!name) {
             return res.status(422).json({ message: "Bad Request" })
         }
 
-        const hero = await heroRepository.findOne({ urlName: name });
+        const hero = await heroRepository.findOne({ where: { urlName: name } });
 
         if (!hero) {
             return res.status(404).json({ message: "Hero not found" })
@@ -32,9 +33,9 @@ export class HeroController {
     }
 
     async role(req: Request, res: Response) {
-        const heroRepository = getRepository(Hero);
+        const heroRepository = AppDataSource.getRepository(Hero);
 
-        const heroes = await heroRepository.find({ role: roleStringToNumberMap[req.params.role] });
+        const heroes = await heroRepository.find({ where: { role: roleStringToNumberMap[req.params.role] } });
 
         if (!heroes.length) {
             return res.status(404).json({ message: "No Heroes found", data: [] })

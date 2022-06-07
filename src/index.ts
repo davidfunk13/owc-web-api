@@ -1,11 +1,12 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { createConnection, DataSource } from "typeorm";
 import express from "express";
 import routes from "./routes";
+import { AppDataSource } from "./datasource";
 
 const PORT = process.env.PORT || 3001;
 
-createConnection()
+AppDataSource.initialize()
     .then(async () => {
         const app = express();
         
