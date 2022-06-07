@@ -5,15 +5,16 @@ import getFilters from "../../utils/getFilters/getFilters";
 import QueryFilters from "../../types/QueryFilters";
 import getErrors from "../../utils/getErrors/getErrors";
 import parseBool from "../../utils/parseBool/parseBool";
+import { AppDataSource } from "../../datasource";
 
 export class BattletagController {
     async one(req: Request, res: Response) {
         try {
-            const battletagRepository = getRepository(Battletag);
+            const battletagRepository = AppDataSource.getRepository(Battletag);
 
             const filters = getFilters(req.query.with as QueryFilters)
 
-            const battletag = await battletagRepository.findOne(req.params.id, { relations: filters });
+            const battletag = await battletagRepository.findOne({ where: { id: +req.params.id }, relations: filters });
 
             if (!battletag) {
                 return res.status(400).json({ message: "Battletag not found." })
@@ -27,7 +28,7 @@ export class BattletagController {
     }
 
     async save(req: Request, res: Response) {
-        const battletagRepository = getRepository(Battletag);
+        const battletagRepository = AppDataSource.getRepository(Battletag);
 
         const battletag = new Battletag();
 
@@ -47,11 +48,11 @@ export class BattletagController {
         }
     }
 
-    async remove(req: Request, res: Response,) {       
+    async remove(req: Request, res: Response,) {
         try {
-            const battletagRepository = getRepository(Battletag);
- 
-            const battletag = await battletagRepository.findOne(req.params.id);
+            const battletagRepository = AppDataSource.getRepository(Battletag);
+
+            const battletag = await battletagRepository.findOneBy({ id: +req.params.id });
 
             if (!battletag) {
                 return res.status(404).json({ message: "Battletag not found." });

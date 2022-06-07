@@ -1,5 +1,7 @@
 import { config } from 'dotenv';
-import jwt from 'express-jwt';
+// import jwt from 'express-jwt';
+var { expressjwt: jwt } = require("express-jwt");
+
 import JwksRsa from 'jwks-rsa';
 
 config();

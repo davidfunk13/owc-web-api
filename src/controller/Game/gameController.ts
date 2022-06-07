@@ -4,6 +4,7 @@ import { Battletag } from "../../entity/Battletag/Battletag";
 import { Session } from "../../entity/Session/Session";
 import getErrors from "../../utils/getErrors/getErrors";
 import { Game } from "../../entity/Game/Game";
+import { AppDataSource } from "../../datasource";
 
 export class GameController {
     async all(req: Request, res: Response) {
@@ -14,7 +15,7 @@ export class GameController {
                 return res.status(422).json({ message: "Session Id not provided." })
             }
 
-            const session = await getRepository(Session).findOne(+params, { relations: ["sessions"] });
+            const session = await AppDataSource.getRepository(Session).findOne({ where: { id: +params }, relations: ["sessions"] });
 
             if (!session) {
                 return res.status(404).json({ message: "Session not found." })
@@ -36,7 +37,7 @@ export class GameController {
 
     async one(req: Request, res: Response, next: NextFunction) {
         try {
-            const game = await getRepository(Game).findOne(req.params.id);
+            const game = await AppDataSource.getRepository(Game).findOneBy({ id: +req.params.id });
 
             if (!game) {
                 return res.status(404).json({ message: "Game not found." })
@@ -52,15 +53,15 @@ export class GameController {
         try {
             let { sessionId, ...gameInput } = req.body;
 
-            const sessionRepo = getRepository(Session);
+            const sessionRepo = AppDataSource.getRepository(Session);
 
-            const gameRepo = getRepository(Game);
+            const gameRepo = AppDataSource.getRepository(Game);
 
             const game = new Game();
 
             Object.assign(game, gameInput)
 
-            const session = await sessionRepo.findOne({ id: sessionId });
+            const session = await sessionRepo.findOneBy({ id: sessionId });
 
             if (!session) {
                 return res.status(404).json({ message: "Session not found." });
@@ -89,9 +90,9 @@ export class GameController {
                 ...gameInput
             } = req.body;
 
-            const gameRepo = getRepository(Game);
+            const gameRepo = AppDataSource.getRepository(Game);
 
-            const game = await gameRepo.findOne(id, { relations: ["session"] });
+            const game = await gameRepo.findOne({ where: { id }, relations: ["session"] });
 
             if (!game) {
                 return res.status(404).json({ message: "Game not found." });
@@ -122,13 +123,13 @@ export class GameController {
         try {
             const params = req.params.id;
 
-            const gameRepo = getRepository(Game);
+            const gameRepo = AppDataSource.getRepository(Game);
 
             if (!params || isNaN(+params)) {
                 return res.status(422).json({ message: "Game Id not provided." })
             }
 
-            let game = await gameRepo.findOne(params);
+            let game = await gameRepo.findOneBy({ id: +params });
 
             if (!game) {
                 return res.json({ message: "Game not found." });
