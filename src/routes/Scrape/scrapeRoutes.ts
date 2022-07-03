@@ -6,6 +6,6 @@ const scrapeApi = express.Router();
 
 const scrapeController = new ScrapeController()
 
-scrapeApi.get('/battletags/:battletag/:page', scrapeController.fetchList);
+scrapeApi.get('/battletags/:battletag/:page?', scrapeController.fetchList);
 
 export default scrapeApi
