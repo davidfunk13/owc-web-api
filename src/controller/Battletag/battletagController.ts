@@ -1,9 +1,7 @@
-import { getRepository } from "typeorm";
 import { Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 import getFilters from "../../utils/getFilters/getFilters";
 import QueryFilters from "../../types/QueryFilters";
-import getErrors from "../../utils/getErrors/getErrors";
 import parseBool from "../../utils/parseBool/parseBool";
 import { AppDataSource } from "../../datasource";
 
@@ -65,5 +63,4 @@ export class BattletagController {
             return res.status(500).json({ message: "Something went wrong." })
         }
     }
-
 }
