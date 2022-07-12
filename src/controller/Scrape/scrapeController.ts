@@ -5,12 +5,13 @@ import { Request } from "express-jwt";
 export class ScrapeController {
     async fetchList(req: Request, res: Response,) {
         try {
+            //redis cache coming to the rescue...
             const battletag= req.params.battletag;
 
             let page = +req.params.page;
 
             const b = await axios.get(process.env.BATTLETAG_URI + battletag)
-console.log("hit",{b})
+
             const pageCount = Math.ceil(b.data.length / 10);
             
             if (!page) {
