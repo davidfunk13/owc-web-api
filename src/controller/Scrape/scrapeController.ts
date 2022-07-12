@@ -10,7 +10,7 @@ export class ScrapeController {
             let page = +req.params.page;
 
             const b = await axios.get(process.env.BATTLETAG_URI + battletag)
-
+console.log("hit",{b})
             const pageCount = Math.ceil(b.data.length / 10);
             
             if (!page) {
