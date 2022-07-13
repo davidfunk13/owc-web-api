@@ -1,26 +1,17 @@
 import "reflect-metadata";
-import { createConnection, DataSource } from "typeorm";
 import express from "express";
 import routes from "./routes";
 import { AppDataSource } from "./datasource";
-import { createClient } from 'redis';
+import redis from "./redis";
 
 const PORT = process.env.PORT || 3001;
 
+
 AppDataSource.initialize().then(async () => {
     // sudo service redis-server start if erroring... do we really wanna go this far just to prevent an extra api call?
+    redis.on('error', (err) => console.log('Redis client Error', err));
 
-    const client = createClient();
-
-    client.on('error', (err) => console.log('Redis Client Error', err));
-
-    await client.connect();
-
-    await client.set('key', 'value');
-
-    const value = await client.get('key')
-
-    console.log({ value })
+    await redis.connect().then(() => console.log("Redis connection successfull."))
 
     const app = express();
 
