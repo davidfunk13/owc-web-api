@@ -1,8 +1,8 @@
 import ErrorType from "./ErrorType";
 
-interface ErrorResponse {
+interface IErrorResponse {
     message: string,
     errors: ErrorType[]
 }
 
-export default ErrorResponse;
+export default IErrorResponse;

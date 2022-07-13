@@ -1,6 +1,6 @@
-import QueryFilters from "../../types/QueryFilters";
+import IQueryFilters from "../../types/IQueryFilters";
 
-const getFilters = (filters: QueryFilters) => {
+const getFilters = (filters: IQueryFilters) => {
 
     if(!filters){
         return []

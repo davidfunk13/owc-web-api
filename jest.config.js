@@ -1,21 +1,32 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
   collectCoverage: true,
+  testEnvironment: 'node',
   testMatch: [
     "**/?(*.)+(spec).ts"
-],
-collectCoverageFrom: [
+  ],
+  collectCoverageFrom: [
     "src/**/*.ts"
-],
-modulePathIgnorePatterns: [
-    // "src/index.ts"
-],
-collectCoverage: true,
-  globals: {
-    "ts-jest": {
-      // ts-jest configuration goes here
-    }
-  }
+  ],
+  coveragePathIgnorePatterns: [
+    "src/types",
+    "src/entity",
+    "src/validation",
+    "src/routes",
+    "src/datasource.ts",
+    "src/index.ts",
+    "src/redis.ts",
+    "src/testFunction.ts",
+  ],
+  testPathIgnorePatterns: [
+    "src/types",
+    "src/entity",
+    "src/validation",
+    "src/routes",
+    "src/datasource.ts",
+    "src/index.ts",
+    "src/redis.ts",
+    "src/testFunction.ts",
+  ],
 };

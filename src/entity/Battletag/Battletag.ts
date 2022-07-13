@@ -1,6 +1,6 @@
 import { Contains, IsBoolean, IsInt, IsNotEmpty, IsString, validateOrReject } from "class-validator";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate } from "typeorm";
-import { Platform } from "../../types/Platform";
+import IPlatform from "../../types/IPlatform";
 import { Session } from "../Session/Session";
 
 @Entity()
@@ -35,7 +35,7 @@ export class Battletag {
   @Column()
   @IsNotEmpty()
   @IsString()
-  platform: Platform;
+  platform: IPlatform;
   
   @Column()
   @IsNotEmpty()

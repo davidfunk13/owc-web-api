@@ -1,5 +1,5 @@
-interface ErrorConstraints {
+interface IErrorConstraints {
     [key: string]: string
 }
 
-export default ErrorConstraints
+export default IErrorConstraints

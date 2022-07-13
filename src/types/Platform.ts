@@ -1,1 +1,0 @@
-export type Platform = "playstation" | "xbl" | "pc" | "nintendo-switch";

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Battletag } from "../../entity/Battletag/Battletag";
 import getFilters from "../../utils/getFilters/getFilters";
-import QueryFilters from "../../types/QueryFilters";
+import IQueryFilters from "../../types/IQueryFilters";
 import parseBool from "../../utils/parseBool/parseBool";
 import { AppDataSource } from "../../datasource";
 
@@ -10,7 +10,7 @@ export class BattletagController {
         try {
             const battletagRepository = AppDataSource.getRepository(Battletag);
 
-            const filters = getFilters(req.query.with as QueryFilters)
+            const filters = getFilters(req.query.with as IQueryFilters)
 
             const battletag = await battletagRepository.findOne({ where: { id: +req.params.id }, relations: filters });
 

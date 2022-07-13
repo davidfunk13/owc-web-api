@@ -1,6 +1,6 @@
-import Hero from "../types/Hero";
+import IHero from "../types/IHero";
 
-const heroList: Hero[] = [
+const heroList: IHero[] = [
     {
         name: 'Ana',
         role: 2

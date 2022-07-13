@@ -1,3 +1,6 @@
+
+// make a proper interface for this
+
 const paginateItems = (data: [], page?: number) => {
     const pages = Math.ceil(data.length / 10);
 

@@ -1,8 +1,8 @@
 import ErrorConstraints from "./ErrorConstraints";
 
-interface ErrorType {
+interface IErrorType {
     value: number,
     constraints: ErrorConstraints
 };
 
-export default ErrorType
+export default IErrorType

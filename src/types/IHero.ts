@@ -1,8 +1,8 @@
 import Role from "./Role";
 
-interface Hero {
+interface IHero {
     name: string
     role: Role
 }
 
-export default Hero
+export default IHero
