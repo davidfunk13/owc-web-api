@@ -28,12 +28,11 @@ export class BattletagController {
     async save(req: Request, res: Response) {
         const battletagRepository = AppDataSource.getRepository(Battletag);
 
-        console.log({ body: req.body })
-
         const battletag = new Battletag();
 
         Object.assign(battletag, req.body);
 
+        battletag.isPublic = parseBool(battletag.isPublic)
         battletag.level = battletag.level ? +battletag.level : undefined
         battletag.playerLevel = battletag.playerLevel ? +battletag.playerLevel : undefined
 
