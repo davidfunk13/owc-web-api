@@ -29,7 +29,6 @@ export class Battletag {
   playerLevel: number;
 
   @Column()
-  @IsBoolean()
   isPublic: boolean;
 
   @Column()

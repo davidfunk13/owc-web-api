@@ -28,12 +28,12 @@ export class BattletagController {
     async save(req: Request, res: Response) {
         const battletagRepository = AppDataSource.getRepository(Battletag);
 
+        console.log({ body: req.body })
+
         const battletag = new Battletag();
 
         Object.assign(battletag, req.body);
 
-        //any additional coersion that needs to take place.
-        battletag.isPublic = battletag.isPublic ? parseBool(battletag.isPublic) : undefined
         battletag.level = battletag.level ? +battletag.level : undefined
         battletag.playerLevel = battletag.playerLevel ? +battletag.playerLevel : undefined
 
@@ -42,7 +42,8 @@ export class BattletagController {
 
             return res.status(200).json({ message: "Battletag saved.", data: result })
         } catch (err) {
-            return res.status(500).json({ message: "Something went wrong." })
+            console.log({ err })
+            return res.status(500).json({ err, message: "Somethsssssing went wrong." })
         }
     }
 
