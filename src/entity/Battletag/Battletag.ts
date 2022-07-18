@@ -16,6 +16,11 @@ export class Battletag {
   @Column()
   @IsNotEmpty()
   @IsString()
+  userId: string
+  
+  @Column()
+  @IsNotEmpty()
+  @IsString()
   urlName: string;
 
   @Column()

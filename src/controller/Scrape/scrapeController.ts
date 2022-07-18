@@ -16,8 +16,6 @@ export class ScrapeController {
             const cacheResults = await redis.get(battletag);
 
             if (cacheResults) {
-                console.log("cache hit! :)")
-
                 const b = JSON.parse(cacheResults);
 
                 const paginatedData = paginateItems(b, page);
@@ -29,8 +27,6 @@ export class ScrapeController {
             }
 
             const b = await axios.get(process.env.BATTLETAG_URI + battletag);
-
-            console.log("External API has been hit.");
 
             await redis.set(battletag, JSON.stringify(b.data), {
                 EX: cacheTime,

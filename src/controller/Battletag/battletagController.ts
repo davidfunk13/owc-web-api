@@ -25,6 +25,30 @@ export class BattletagController {
 
     }
 
+    async getAll(req: Request, res: Response) {
+        try {
+            const battletagRepository = AppDataSource.getRepository(Battletag);
+
+            const filters = getFilters(req.query.with as IQueryFilters)
+
+
+            if (!req.query.id) {
+                return res.status(422).json({ message: "User id not included in request." })
+            }
+
+            const battletags = await battletagRepository.find({ where: { userId: String(req.query.id) }, relations: filters });
+
+            if (!battletags.length) {
+                return res.status(400).json({ message: "Battletags not found for this user." })
+            }
+
+            return res.status(200).json({ message: "Battletags found.", data: battletags })
+        } catch (err) {
+            return res.status(500).json({ message: "Something went wrong." })
+        }
+
+    }
+
     async save(req: Request, res: Response) {
         const battletagRepository = AppDataSource.getRepository(Battletag);
 
